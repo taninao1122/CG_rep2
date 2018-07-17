@@ -33,6 +33,33 @@ void myReshape(int width, int height)
 	glTranslated(0.0, 0.0, -5.0);		// move teapot
 }
 
+void getValueFromMenu(int value)
+{
+	switch (value) {
+	case 1:
+	//	sizeOfTeapot = 0.5;
+		break;
+	case 2:
+	//	sizeOfTeapot = 1.0;
+		break;
+	case 3:
+	//	sizeOfTeapot = 2.0;
+		break;
+	default:
+		break;
+	}
+}
+
+
+void mySetMenu()
+{
+	glutCreateMenu(getValueFromMenu);
+	glutAddMenuEntry("x 0.5", 1);
+	glutAddMenuEntry("x 1.0", 2);
+	glutAddMenuEntry("x 2.0", 3);
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
+}
+
 void myDisplay()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -79,7 +106,7 @@ int main(int argc, char** argv)
 	glutInit(&argc, argv);
 	myInit(argv[0]);
 	glutKeyboardFunc(myKeyboard);
-
+	mySetMenu();
 	glutMouseFunc(myMouseFunc);
 	glutMotionFunc(myMouseMotion);
 
