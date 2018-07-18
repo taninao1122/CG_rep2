@@ -28,7 +28,7 @@ unsigned char texImage[imageHeight][imageWidth][3];
 void readPPMImage(char* filename)
 {
 	FILE *fp;
-	int  ch, i;
+	int  ch;
 
 	if ((fp = fopen(filename, "r")) == NULL) {
 		fprintf(stderr, "Cannot open ppm file %s\n", filename);
@@ -40,7 +40,7 @@ void readPPMImage(char* filename)
 
 void setUpTexture(void)
 {
-	readPPMImage("mizutama.ppm");
+	readPPMImage("wood.ppm");
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -156,8 +156,7 @@ void myDisplay()
 	glRotated(xAngle, 1.0, 0.0, 0.0);
 	glRotated(yAngle, 0.0, 1.0, 0.0);
 	glutSolidTeapot(1.0);
-	glPopMatrix();
-	glutSwapBuffers();
+	
 
 	glEnable(GL_TEXTURE_2D);
 	glBegin(GL_QUADS);
@@ -182,6 +181,8 @@ void myDisplay()
 	
 	}
 	glEnd();
+	glPopMatrix();
+	glutSwapBuffers();
 
 	glFlush();
 	glDisable(GL_TEXTURE_2D);
