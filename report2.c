@@ -18,9 +18,17 @@ float	light_pos[] = { 5, 0, 0, 1 };
 double	theta = 0.0;
 void myKeyboard(unsigned char key, int x, int y)
 {
-	if (key == 27) exit(0);
-	else if (key == 'a') {
-		anime = 1;
+	if (key == 27)
+	{
+		exit(0);
+	}
+	else if (key == 'a')
+	{
+			anime = 1;	
+	}
+	else if (key == 's') 
+	{
+		anime = 0;
 	}
 }
 
@@ -100,6 +108,7 @@ void myDisplay()
 
 	glPushMatrix();
 
+	gluLookAt(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 	glTranslated(0.0, 0.0, -3.0);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, mtrl_diffuse);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mtrl_specular);
@@ -149,15 +158,15 @@ void myMouseFunc(int button, int state, int x, int y)
 		mouseFlag = GL_FALSE;
 	}
 }
-/*
+
 void myIdle(void)
 {
-//	dist += 0.03;
-//	if (dist >= -1.0) glutIdleFunc(NULL);
-	theta = fmod(theta + 0.5, 360.0); //��]�̕ύX
+
+	yAngle = fmod(yAngle + 0.5, 360.0);
 	glutPostRedisplay();
+
 }
-*/
+
 
 
 int main(int argc, char** argv)
@@ -169,7 +178,7 @@ int main(int argc, char** argv)
 	mySetMenu();
 	glutMouseFunc(myMouseFunc);
 	glutMotionFunc(myMouseMotion);
-//	glutIdleFunc(myIdle);
+	glutIdleFunc(myIdle);
 	glutReshapeFunc(myReshape);
 	glutDisplayFunc(myDisplay);
 	glutMainLoop();
