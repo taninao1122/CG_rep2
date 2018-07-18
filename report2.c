@@ -8,13 +8,28 @@ unsigned char	mouseFlag = GL_FALSE;		// flag for moving or not
 int				xStart, yStart;				// start position when drug begins
 double			xAngle = 0.0, yAngle = 0.0;	// angles of the teapot
 int anime = 0;
-double	dist = -10.0;
+double dist = 0.0;
+
+float mtrl_diffuse[] = { 0.6, 0.6, 0.6, 0.0 };
+float mtrl_specular[] = { 1.0, 0.1, 0.3, 0.0 };
+float mtrl_shininess[] = { 128.0 };
+
+float	light_pos[] = { 5, 0, 0, 1 };
+
 double	theta = 0.0;
 void myKeyboard(unsigned char key, int x, int y)
 {
-	if (key == 27) exit(0);
-	else if (key == 'a') {
-		anime = 1;
+	if (key == 27)
+	{
+		exit(0);
+	}
+	else if (key == 'a')
+	{
+			anime = 1;	
+	}
+	else if (key == 's') 
+	{
+		anime = 0;
 	}
 }
 
@@ -87,13 +102,22 @@ void xyzAxes(double length)
 void myDisplay()
 {
 	int i = 0;
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
 	xyzAxes(10.0);
+
 	glPushMatrix();
-	glColor3d(1.0, 0.0, 0.0);
+
+//	gluLookAt(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+	glTranslated(0.0, 0.0, -3.0);
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, mtrl_diffuse);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, mtrl_specular);
+	glMaterialfv(GL_FRONT, GL_SHININESS, mtrl_shininess);
 	glRotated(xAngle, 1.0, 0.0, 0.0);
 	glRotated(yAngle, 0.0, 1.0, 0.0);
-	glutWireTeapot(1.0);
+	glutSolidTeapot(1.0);
 	glBegin(GL_LINES);
 	for (i = -35; i< 36; i += 2) {
 		glVertex3i(i, 0, -35);
@@ -137,24 +161,17 @@ void myMouseFunc(int button, int state, int x, int y)
 	}
 }
 
-void myIdle(void)
-{
-	dist += 0.03;
-	if (dist >= -1.0) glutIdleFunc(NULL);
-	theta = fmod(theta + 0.5, 360.0); //��]�̕ύX
-	glutPostRedisplay();
-}
-
 
 int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
 	myInit(argv[0]);
+	glEnable(GL_LIGHT0);
 	glutKeyboardFunc(myKeyboard);
 	mySetMenu();
 	glutMouseFunc(myMouseFunc);
 	glutMotionFunc(myMouseMotion);
-	glutIdleFunc(myIdle);
+//	glutIdleFunc(myIdle);
 	glutReshapeFunc(myReshape);
 	glutDisplayFunc(myDisplay);
 	glutMainLoop();
