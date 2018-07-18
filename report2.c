@@ -90,10 +90,10 @@ void myDisplay()
 	glClear(GL_COLOR_BUFFER_BIT);
 	xyzAxes(10.0);
 	glPushMatrix();
-	glColor3d(1.0, 0.0, 0.0);
+//	glColor3d(1.0, 0.0, 0.0);
 	glRotated(xAngle, 1.0, 0.0, 0.0);
 	glRotated(yAngle, 0.0, 1.0, 0.0);
-	glutWireTeapot(1.0);
+	glutSolidTeapot(1.0);
 	glBegin(GL_LINES);
 	for (i = -35; i< 36; i += 2) {
 		glVertex3i(i, 0, -35);
