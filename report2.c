@@ -1,6 +1,7 @@
 ﻿/* p5-RotateTeaPot.c
 * Rotate the teapot by using glutMousFunc() and glutMotionFunc().
 */
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdlib.h>
 #include <GL/glut.h>
 #include <stdio.h>
@@ -22,7 +23,8 @@ float	light_pos[] = { 5, 0, 0, 1 };
 
 double	theta = 0.0;
 unsigned char texImage[imageHeight][imageWidth][3];
-/*
+
+
 void readPPMImage(char* filename)
 {
 	FILE *fp;
@@ -44,11 +46,10 @@ void setUpTexture(void)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageWidth, imageHeight,
-		0, GL_RGB, GL_UNSIGNED_BYTE, texImage);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageWidth, imageHeight,0, GL_RGB, GL_UNSIGNED_BYTE, texImage);
 }
 
-*/
+
 void myKeyboard(unsigned char key, int x, int y)
 {
 	if (key == 27)
@@ -79,6 +80,10 @@ void myInit(char *progname)
 	gluPerspective(90.0, (double)width / (double)height, 0.1, 100.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
+
+	glShadeModel(GL_SMOOTH);
+	glEnable(GL_DEPTH_TEST);
 }
 
 void myReshape(int width, int height)
@@ -151,19 +156,35 @@ void myDisplay()
 	glRotated(xAngle, 1.0, 0.0, 0.0);
 	glRotated(yAngle, 0.0, 1.0, 0.0);
 	glutSolidTeapot(1.0);
+	glPopMatrix();
+	glutSwapBuffers();
 
+	glEnable(GL_TEXTURE_2D);
 	glBegin(GL_QUADS);
 	for (i = -35; i< 36; i += 2) {
+
 		glVertex3i(i, -1, -35);
+//		glVertex3i(-35, -1, -35);
+//		glVertex3i(35, -1, -35);
+
 		glVertex3i(i, -1, 35);
+	//	glVertex3i(-35, -1, 35);
+	//	glVertex3i(35, -1, 35);
+
+
 		glVertex3i(-50, -1, i);
+	//	glVertex3i(-50, -1, -36);
+	//	glVertex3i(-50, -1, 35);
+
 		glVertex3i(50, -1, i);
+	//	glVertex3i(50, -1, -35);
+	//	glVertex3i(50, -1, 35);
+	
 	}
 	glEnd();
 
-
-	glPopMatrix();
-	glutSwapBuffers();
+	glFlush();
+	glDisable(GL_TEXTURE_2D);
 }
 
 void myMouseMotion(int x, int y)
@@ -200,6 +221,7 @@ int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
 	myInit(argv[0]);
+	setUpTexture();
 	glEnable(GL_LIGHT0);
 	glutKeyboardFunc(myKeyboard);
 	mySetMenu();
