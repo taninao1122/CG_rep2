@@ -3,12 +3,16 @@
 */
 #include <stdlib.h>
 #include <GL/glut.h>
+#include <stdio.h>
 
 unsigned char	mouseFlag = GL_FALSE;		// flag for moving or not
 int				xStart, yStart;				// start position when drug begins
 double			xAngle = 0.0, yAngle = 0.0;	// angles of the teapot
 int anime = 0;
 double dist = 0.0;
+
+#define	imageWidth 256
+#define	imageHeight 256
 
 float mtrl_diffuse[] = { 0.6, 0.6, 0.6, 0.0 };
 float mtrl_specular[] = { 1.0, 0.1, 0.3, 0.0 };
@@ -17,6 +21,34 @@ float mtrl_shininess[] = { 128.0 };
 float	light_pos[] = { 5, 0, 0, 1 };
 
 double	theta = 0.0;
+unsigned char texImage[imageHeight][imageWidth][3];
+/*
+void readPPMImage(char* filename)
+{
+	FILE *fp;
+	int  ch, i;
+
+	if ((fp = fopen(filename, "r")) == NULL) {
+		fprintf(stderr, "Cannot open ppm file %s\n", filename);
+		exit(1);
+	}
+	fread(texImage, 1, imageWidth*imageHeight * 3, fp);	// read RGB data
+	fclose(fp);
+}
+
+void setUpTexture(void)
+{
+	readPPMImage("mizutama.ppm");
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageWidth, imageHeight,
+		0, GL_RGB, GL_UNSIGNED_BYTE, texImage);
+}
+
+*/
 void myKeyboard(unsigned char key, int x, int y)
 {
 	if (key == 27)
@@ -105,6 +137,7 @@ void myDisplay()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
+	glEnable(GL_TEXTURE_2D);
 	xyzAxes(10.0);
 
 	glPushMatrix();
@@ -118,12 +151,13 @@ void myDisplay()
 	glRotated(xAngle, 1.0, 0.0, 0.0);
 	glRotated(yAngle, 0.0, 1.0, 0.0);
 	glutSolidTeapot(1.0);
-	glBegin(GL_LINES);
+
+	glBegin(GL_QUADS);
 	for (i = -35; i< 36; i += 2) {
-		glVertex3i(i, 0, -35);
-		glVertex3i(i, 0, 35);
-		glVertex3i(-50, 0, i);
-		glVertex3i(50, 0, i);
+		glVertex3i(i, -1, -35);
+		glVertex3i(i, -1, 35);
+		glVertex3i(-50, -1, i);
+		glVertex3i(50, -1, i);
 	}
 	glEnd();
 
