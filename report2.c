@@ -8,6 +8,7 @@ unsigned char	mouseFlag = GL_FALSE;		// flag for moving or not
 int				xStart, yStart;				// start position when drug begins
 double			xAngle = 0.0, yAngle = 0.0;	// angles of the teapot
 int anime = 0;
+double dist = 0.0;
 
 float mtrl_diffuse[] = { 0.6, 0.6, 0.6, 0.0 };
 float mtrl_specular[] = { 1.0, 0.1, 0.3, 0.0 };
@@ -108,7 +109,8 @@ void myDisplay()
 
 	glPushMatrix();
 
-	gluLookAt(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+//	gluLookAt(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
 	glTranslated(0.0, 0.0, -3.0);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, mtrl_diffuse);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mtrl_specular);
@@ -159,15 +161,6 @@ void myMouseFunc(int button, int state, int x, int y)
 	}
 }
 
-void myIdle(void)
-{
-
-	yAngle = fmod(yAngle + 0.5, 360.0);
-	glutPostRedisplay();
-
-}
-
-
 
 int main(int argc, char** argv)
 {
@@ -178,7 +171,7 @@ int main(int argc, char** argv)
 	mySetMenu();
 	glutMouseFunc(myMouseFunc);
 	glutMotionFunc(myMouseMotion);
-	glutIdleFunc(myIdle);
+//	glutIdleFunc(myIdle);
 	glutReshapeFunc(myReshape);
 	glutDisplayFunc(myDisplay);
 	glutMainLoop();
