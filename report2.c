@@ -7,19 +7,31 @@
 unsigned char	mouseFlag = GL_FALSE;		// flag for moving or not
 int				xStart, yStart;				// start position when drug begins
 double			xAngle = 0.0, yAngle = 0.0;	// angles of the teapot
-
+int anime = 0;
+double	dist = -10.0;
+double	theta = 0.0;
 void myKeyboard(unsigned char key, int x, int y)
 {
 	if (key == 27) exit(0);
+	else if (key == 'a') {
+		anime = 1;
+	}
 }
 
 void myInit(char *progname)
-{
+{	
+	int width = 640, height = 480;
+
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 	glutInitWindowSize(500, 500);
 	glutInitWindowPosition(0, 0);
 	glutCreateWindow(progname);
 	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(90.0, (double)width / (double)height, 0.1, 100.0);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 }
 
 void myReshape(int width, int height)
@@ -60,14 +72,38 @@ void mySetMenu()
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
 
+void xyzAxes(double length)
+{
+	glBegin(GL_LINES);
+	glColor3d(1.0, 1.0, 0.0);	// yellow
+	glVertex3d(0.0, 0.0, 0.0); glVertex3d(length, 0.0, 0.0);	//x-axis
+	glColor3d(1.0, 0.0, 0.0);	// red
+	glVertex3d(0.0, 0.0, 0.0); glVertex3d(0.0, length, 0.0);	//y-axis
+	glColor3d(0.0, 0.0, 1.0);	// blue
+	glVertex3d(0.0, 0.0, 0.0); glVertex3d(0.0, 0.0, length);	//z-axis
+	glEnd();
+}
+
 void myDisplay()
 {
+	int i = 0;
 	glClear(GL_COLOR_BUFFER_BIT);
+	xyzAxes(10.0);
 	glPushMatrix();
 	glColor3d(1.0, 0.0, 0.0);
 	glRotated(xAngle, 1.0, 0.0, 0.0);
 	glRotated(yAngle, 0.0, 1.0, 0.0);
 	glutWireTeapot(1.0);
+	glBegin(GL_LINES);
+	for (i = -35; i< 36; i += 2) {
+		glVertex3i(i, 0, -35);
+		glVertex3i(i, 0, 35);
+		glVertex3i(-50, 0, i);
+		glVertex3i(50, 0, i);
+	}
+	glEnd();
+
+
 	glPopMatrix();
 	glutSwapBuffers();
 }
@@ -101,6 +137,15 @@ void myMouseFunc(int button, int state, int x, int y)
 	}
 }
 
+void myIdle(void)
+{
+	dist += 0.03;
+	if (dist >= -1.0) glutIdleFunc(NULL);
+	theta = fmod(theta + 0.5, 360.0); //��]�̕ύX
+	glutPostRedisplay();
+}
+
+
 int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
@@ -109,7 +154,7 @@ int main(int argc, char** argv)
 	mySetMenu();
 	glutMouseFunc(myMouseFunc);
 	glutMotionFunc(myMouseMotion);
-
+	glutIdleFunc(myIdle);
 	glutReshapeFunc(myReshape);
 	glutDisplayFunc(myDisplay);
 	glutMainLoop();
