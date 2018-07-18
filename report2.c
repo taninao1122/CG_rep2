@@ -11,6 +11,7 @@ int				xStart, yStart;				// start position when drug begins
 double			xAngle = 0.0, yAngle = 0.0;	// angles of the teapot
 int anime = 0;
 double dist = 0.0;
+double	sizeOfTeapot = 1.0;
 
 #define	imageWidth 256
 #define	imageHeight 256
@@ -101,13 +102,13 @@ void getValueFromMenu(int value)
 {
 	switch (value) {
 	case 1:
-	//	sizeOfTeapot = 0.5;
+		sizeOfTeapot = 0.5;
 		break;
 	case 2:
-	//	sizeOfTeapot = 1.0;
+		sizeOfTeapot = 1.0;
 		break;
 	case 3:
-	//	sizeOfTeapot = 2.0;
+		sizeOfTeapot = 2.0;
 		break;
 	default:
 		break;
@@ -136,6 +137,11 @@ void xyzAxes(double length)
 	glEnd();
 }
 
+void myIdle(void)
+{
+	glutPostRedisplay();
+}
+
 void myDisplay()
 {
 	int i = 0;
@@ -155,7 +161,7 @@ void myDisplay()
 	glMaterialfv(GL_FRONT, GL_SHININESS, mtrl_shininess);
 	glRotated(xAngle, 1.0, 0.0, 0.0);
 	glRotated(yAngle, 0.0, 1.0, 0.0);
-	glutSolidTeapot(1.0);
+	glutSolidTeapot(sizeOfTeapot);
 	
 
 	glEnable(GL_TEXTURE_2D);
@@ -228,7 +234,7 @@ int main(int argc, char** argv)
 	mySetMenu();
 	glutMouseFunc(myMouseFunc);
 	glutMotionFunc(myMouseMotion);
-//	glutIdleFunc(myIdle);
+	glutIdleFunc(myIdle);
 	glutReshapeFunc(myReshape);
 	glutDisplayFunc(myDisplay);
 	glutMainLoop();
