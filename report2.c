@@ -161,8 +161,11 @@ void myDisplay()
 	glRotated(xAngle, 1.0, 0.0, 0.0);
 	glRotated(yAngle, 0.0, 1.0, 0.0);
 	glColor3d(252.0, 226.0, 196.0);
+	setUpTexture("mizutama.ppm");
+	glEnable(GL_TEXTURE_2D);
 	glutSolidTeapot(sizeOfTeapot);
-	
+	glDisable(GL_TEXTURE_2D);
+
 	setUpTexture("wood.data");
 	glEnable(GL_TEXTURE_2D);
 	glBegin(GL_QUADS);
