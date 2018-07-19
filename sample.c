@@ -109,7 +109,7 @@ void myDisplay(void)
 	setUpTexture("mizutama.ppm");
 	glEnable(GL_TEXTURE_2D);
 	glRotated(theta, 0.0, 1.0, 0.0);
-	glutSolidTeapot(sizeOfTeapot);
+	glutSolidTeapot(1.0);
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 

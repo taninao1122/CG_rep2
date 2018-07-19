@@ -10,7 +10,7 @@
 unsigned char	mouseFlag = GL_FALSE;		// flag for moving or not
 int				xStart, yStart;				// start position when drug begins
 double			xAngle = 0.0, yAngle = 0.0;	// angles of the teapot
-double	sizeOfTeapot = 1.0;
+int textureMenu = 0;
 
 double	 theta = 0.0;						// angular of tea pot
 float mtrl_diffuse[] = { 0.6, 0.6, 0.6, 0.0 };
@@ -65,13 +65,13 @@ void getValueFromMenu(int value)
 {
 	switch (value) {
 	case 1:
-		sizeOfTeapot = 0.5;
+		textureMenu = 0;
 		break;
 	case 2:
-		sizeOfTeapot = 1.0;
+		textureMenu = 1;
 		break;
 	case 3:
-		sizeOfTeapot = 2.0;
+		textureMenu = 2;
 		break;
 	default:
 		break;
@@ -82,9 +82,9 @@ void getValueFromMenu(int value)
 void mySetMenu()
 {
 	glutCreateMenu(getValueFromMenu);
-	glutAddMenuEntry("x 0.5", 1);
-	glutAddMenuEntry("x 1.0", 2);
-	glutAddMenuEntry("x 2.0", 3);
+	glutAddMenuEntry("iron", 1);
+	glutAddMenuEntry("mizutama", 2);
+	glutAddMenuEntry("sea", 3);
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
 
@@ -106,10 +106,18 @@ void myDisplay(void)
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mtrl_specular);
 	glMaterialfv(GL_FRONT, GL_SHININESS, mtrl_shininess);
 	glRotated(xAngle, 1.0, 0.0, 0.0);
-	setUpTexture("mizutama.ppm");
+	if (textureMenu == 0) {
+		setUpTexture("iron.ppm");
+	}
+	else if(textureMenu == 1){
+		setUpTexture("mizutama.ppm");
+	}
+	else {
+		setUpTexture("sea.ppm");
+	}
 	glEnable(GL_TEXTURE_2D);
 	glRotated(theta, 0.0, 1.0, 0.0);
-	glutSolidTeapot(sizeOfTeapot);
+	glutSolidTeapot(1.0);
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 
