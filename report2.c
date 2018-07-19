@@ -1,26 +1,27 @@
-﻿/* p5-RotateTeaPot.c
-* Rotate the teapot by using glutMousFunc() and glutMotionFunc().
+﻿/*  p6-LightPosition.c
+*  Examination of a light position.
 */
-#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS 1
 #include <stdlib.h>
 #include <GL/glut.h>
-#include <stdio.h>
+#include<stdio.h>
+#include <math.h>
 
 unsigned char	mouseFlag = GL_FALSE;		// flag for moving or not
 int				xStart, yStart;				// start position when drug begins
 double			xAngle = 0.0, yAngle = 0.0;	// angles of the teapot
 double	sizeOfTeapot = 1.0;
 
-#define	imageWidth 256
-#define	imageHeight 256
-
+double	 theta = 0.0;						// angular of tea pot
 float mtrl_diffuse[] = { 0.6, 0.6, 0.6, 0.0 };
 float mtrl_specular[] = { 1.0, 0.1, 0.3, 0.0 };
-float mtrl_shininess[] = { 128.0 };
+float mtrl_shininess[] = { 128.0 };					// range [0,128]
 
 float	light_pos[] = { 5, 0, 0, 1 };
 
-double	theta = 0.0;
+#define	imageWidth 256
+#define	imageHeight 256
+
 unsigned char texImage[imageHeight][imageWidth][3];
 
 
@@ -45,47 +46,19 @@ void setUpTexture(char* filename)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageWidth, imageHeight,0, GL_RGB, GL_UNSIGNED_BYTE, texImage);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, texImage);
 }
 
-
-void myKeyboard(unsigned char key, int x, int y)
+void xyzAxes(double length)
 {
-	if (key == 27)
-	{
-		exit(0);
-	}
-}
-
-void myInit(char *progname)
-{	
-	int width = 640, height = 480;
-
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
-	glutInitWindowSize(500, 500);
-	glutInitWindowPosition(0, 0);
-	glutCreateWindow(progname);
-	glClearColor(0.0, 0.0, 0.0, 1.0);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(90.0, (double)width / (double)height, 0.1, 100.0);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-
-	glShadeModel(GL_SMOOTH);
-	glEnable(GL_DEPTH_TEST);
-}
-
-void myReshape(int width, int height)
-{
-	glViewport(0, 0, width, height);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(60.0, (double)width / (double)height, 0.1, 20.0);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glTranslated(0.0, 0.0, -5.0);		// move teapot
+	glBegin(GL_LINES);
+	glColor3d(1.0, 1.0, 0.0);	// yellow
+	glVertex3d(0.0, 0.0, 0.0); glVertex3d(length, 0.0, 0.0);	//x-axis
+	glColor3d(1.0, 0.0, 0.0);	// red
+	glVertex3d(0.0, 0.0, 0.0); glVertex3d(0.0, length, 0.0);	//y-axis
+	glColor3d(0.0, 0.0, 1.0);	// blue
+	glVertex3d(0.0, 0.0, 0.0); glVertex3d(0.0, 0.0, length);	//z-axis
+	glEnd();
 }
 
 void getValueFromMenu(int value)
@@ -115,43 +88,24 @@ void mySetMenu()
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
 
-void xyzAxes(double length)
-{
-	glBegin(GL_LINES);
-	glColor3d(1.0, 1.0, 0.0);	// yellow
-	glVertex3d(0.0, 0.0, 0.0); glVertex3d(length, 0.0, 0.0);	//x-axis
-	glColor3d(1.0, 0.0, 0.0);	// red
-	glVertex3d(0.0, 0.0, 0.0); glVertex3d(0.0, length, 0.0);	//y-axis
-	glColor3d(0.0, 0.0, 1.0);	// blue
-	glVertex3d(0.0, 0.0, 0.0); glVertex3d(0.0, 0.0, length);	//z-axis
-	glEnd();
-}
 
-void myIdle(void)
-{
-	theta = fmod(theta + 0.5, 360.0);
-	glutPostRedisplay();
-}
 
-void myDisplay()
+
+void myDisplay(void)
 {
 	int i = 0;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
-//	gluLookAt(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 	xyzAxes(10.0);
 
-
 	glPushMatrix();
-
+	
 	glTranslated(0.0, 0.0, -3.0);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, mtrl_diffuse);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mtrl_specular);
 	glMaterialfv(GL_FRONT, GL_SHININESS, mtrl_shininess);
 	glRotated(xAngle, 1.0, 0.0, 0.0);
-//	glRotated(yAngle, 0.0, 1.0, 0.0);
-//	glColor3d(252.0, 226.0, 196.0);
 	setUpTexture("mizutama.ppm");
 	glEnable(GL_TEXTURE_2D);
 	glRotated(theta, 0.0, 1.0, 0.0);
@@ -171,14 +125,54 @@ void myDisplay()
 	}
 	glEnd();
 	glPopMatrix();
-	glutSwapBuffers();
 
+	glutSwapBuffers();
 	glFlush();
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_LIGHTING);
 }
 
+void myIdle(void)
+{
+	theta = fmod(theta + 0.5, 360.0);
+	glutPostRedisplay();
+}
+
+void myReshape(int width, int height)
+{
+	glViewport(0, 0, width, height);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(60.0, (double)width / (double)height, 0.1, 20.0);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslated(0.0, 0.0, -5.0);		// move teapot
+}
+
+void myInit(char *progname)
+{
+	int width = 500, height = 500;
+
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+	glutInitWindowSize(width, height);
+	glutInitWindowPosition(0, 0);
+	glutCreateWindow(progname);
+	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(90.0, (double)width / (double)height, 0.1, 20.0);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glShadeModel(GL_SMOOTH);
+	glEnable(GL_DEPTH_TEST);
+}
+
+void myKeyboard(unsigned char key, int x, int y)
+{
+	if (key == 27) exit(0);
+}
 void myMouseMotion(int x, int y)
 {
 	int		xdis, ydis;
