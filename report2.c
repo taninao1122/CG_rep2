@@ -39,9 +39,9 @@ void readPPMImage(char* filename)
 	fclose(fp);
 }
 
-void setUpTexture(void)
+void setUpTexture(char* filename)
 {
-	readPPMImage("wood.ppm");
+	readPPMImage(filename);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -57,11 +57,11 @@ void myKeyboard(unsigned char key, int x, int y)
 	{
 		exit(0);
 	}
-	else if (key == 'a')
+	if (key == 'a')
 	{
 			anime = 1;	
 	}
-	else if (key == 's') 
+	if (key == 's') 
 	{
 		anime = 0;
 	}
@@ -148,12 +148,11 @@ void myDisplay()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
-	glEnable(GL_TEXTURE_2D);
+//	gluLookAt(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 	xyzAxes(10.0);
 
-	glPushMatrix();
 
-//	gluLookAt(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	glPushMatrix();
 
 	glTranslated(0.0, 0.0, -3.0);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, mtrl_diffuse);
@@ -161,30 +160,17 @@ void myDisplay()
 	glMaterialfv(GL_FRONT, GL_SHININESS, mtrl_shininess);
 	glRotated(xAngle, 1.0, 0.0, 0.0);
 	glRotated(yAngle, 0.0, 1.0, 0.0);
+	glColor3d(252.0, 226.0, 196.0);
 	glutSolidTeapot(sizeOfTeapot);
 	
-
+	setUpTexture("wood.data");
 	glEnable(GL_TEXTURE_2D);
 	glBegin(GL_QUADS);
 	for (i = -35; i< 36; i += 2) {
-
 		glVertex3i(i, -1, -35);
-//		glVertex3i(-35, -1, -35);
-//		glVertex3i(35, -1, -35);
-
 		glVertex3i(i, -1, 35);
-	//	glVertex3i(-35, -1, 35);
-	//	glVertex3i(35, -1, 35);
-
-
 		glVertex3i(-50, -1, i);
-	//	glVertex3i(-50, -1, -36);
-	//	glVertex3i(-50, -1, 35);
-
 		glVertex3i(50, -1, i);
-	//	glVertex3i(50, -1, -35);
-	//	glVertex3i(50, -1, 35);
-	
 	}
 	glEnd();
 	glPopMatrix();
@@ -192,6 +178,8 @@ void myDisplay()
 
 	glFlush();
 	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
 }
 
 void myMouseMotion(int x, int y)
@@ -228,7 +216,6 @@ int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
 	myInit(argv[0]);
-	setUpTexture();
 	glEnable(GL_LIGHT0);
 	glutKeyboardFunc(myKeyboard);
 	mySetMenu();
